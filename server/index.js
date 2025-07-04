@@ -11,10 +11,22 @@ const app = express();
 
 connectDB();
 
+const allowedOrigins = [
+  'http://localhost:3000',
+  'https://work-sync.vercel.app',
+];
+
 app.use(cors({
-    origin: process.env.CLIENT_URL || 'https://work-sync.vercel.app',
-    credentials: true,
-})); // Enable CORS for all routes
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('CORS not allowed for this origin: ' + origin));
+    }
+  },
+  credentials: true,
+}));
+
 
 app.use('/graphql', graphqlHTTP({
     schema,
