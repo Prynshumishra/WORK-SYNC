@@ -11,7 +11,10 @@ const app = express();
 
 connectDB();
 
-app.use(cors()); // Enable CORS for all routes
+app.use(cors({
+    origin: process.env.CLIENT_URL || 'https://work-sync.vercel.app',
+    credentials: true,
+})); // Enable CORS for all routes
 
 app.use('/graphql', graphqlHTTP({
     schema,
