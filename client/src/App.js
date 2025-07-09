@@ -14,6 +14,9 @@ import Project from './pages/Project';
 import NotFound from './pages/NotFound';
 import Login from './pages/Login';
 import Register from './pages/Register';
+import RepositorySync from "./pages/RepositorySync";
+
+
 
 
 
@@ -37,7 +40,7 @@ const cache = new InMemoryCache({
 });
 
 const client = new ApolloClient({
-  uri: 'https://work-sync-1.onrender.com/graphql',
+  uri: `${process.env.REACT_APP_API_URL}/graphql`,
   cache,
 });
 
@@ -59,6 +62,7 @@ function App() {
                  <Route path="/ContactUs" element={<ContactUs />} />
                 <Route path="/projects" element={<ProjectsPage />} />
                 <Route path="/clients" element={<ClientsPage />} />
+                <Route path="/sync-repos" element={<RepositorySync />} />
                 <Route path="/login" element={<Login />} />
                 <Route path="/register" element={<Register />} />
                 <Route path='/projects/:id' element={<Project />} />

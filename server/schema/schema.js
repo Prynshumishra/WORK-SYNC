@@ -1,5 +1,6 @@
 const Project = require('../models/Project');
 const Client = require('../models/Client');
+const Repository = require('../models/Repository');
 
 const {
   GraphQLObjectType,
@@ -10,6 +11,21 @@ const {
   GraphQLNonNull,
   GraphQLEnumType,
 } = require('graphql');
+
+
+
+const RepositoryType = new GraphQLObjectType({
+  name: 'Repository',
+  fields: () => ({
+    id: { type: GraphQLID },
+    name: { type: GraphQLString },
+    platform: { type: GraphQLString },
+    description: { type: GraphQLString },
+    stars: { type: GraphQLString },
+    url: { type: GraphQLString },
+    lastSyncedAt: { type: GraphQLString },
+  }),
+});
 
 // Project Type
 const ProjectType = new GraphQLObjectType({
@@ -69,11 +85,17 @@ const RootQuery = new GraphQLObjectType({
         return Client.findById(args.id);
       },
     },
+    repositories: {
+      type: new GraphQLList(RepositoryType),
+      resolve() {
+        return Repository.find();
+      },
+    },
   },
 });
 
-// Mutations
-const mutation = new GraphQLObjectType({
+// Mutation
+const Mutation = new GraphQLObjectType({
   name: 'Mutation',
   fields: {
     // Add a client
@@ -189,5 +211,5 @@ const mutation = new GraphQLObjectType({
 
 module.exports = new GraphQLSchema({
   query: RootQuery,
-  mutation,
+  mutation: Mutation,
 });

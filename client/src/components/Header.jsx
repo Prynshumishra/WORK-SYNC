@@ -61,6 +61,13 @@ export default function Header() {
                 Contact Us
               </NavLink>
             </li>
+
+             <li className="nav-item">
+              <NavLink to="/sync-repos" className={({ isActive }) => isActive ? 'nav-link active text-white' : 'nav-link text-white'}>
+                Repo Sync
+              </NavLink>
+            </li>
+
             <div className="d-flex ms-lg-3 mt-3 mt-lg-0">
             <NavLink to="/login" className="btn btn-success text-dark fw-bold square-pill me-3 px-3">
               Login
