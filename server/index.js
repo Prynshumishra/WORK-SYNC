@@ -1,24 +1,24 @@
 const express = require('express');
 const colors = require('colors');
 require('dotenv').config();
-const {graphqlHTTP} = require('express-graphql');
+const { graphqlHTTP } = require('express-graphql');
 const schema = require('./schema/schema.js');
-const port = process.env.PORT || 5000;
 const connectDB = require('./config/db');
 const cors = require('cors');
+
 const app = express();
-const syncRoutes = require('./routes/syncRoutes');
+const port = process.env.PORT || 5000;
 
-
-
-
+// Connect to MongoDB
 connectDB();
 
+// Allowlist for CORS
 const allowedOrigins = [
   'http://localhost:3000',
   'https://work-sync.vercel.app',
 ];
 
+// Unified CORS middleware
 app.use(cors({
   origin: function (origin, callback) {
     if (!origin || allowedOrigins.includes(origin)) {
@@ -30,15 +30,16 @@ app.use(cors({
   credentials: true,
 }));
 
-
-
+// GraphQL endpoint
 app.use('/graphql', graphqlHTTP({
-    schema,
-    graphiql: process.env.NODE_ENV === 'development', // Enable GraphiQL in development mode
+  schema,
+  graphiql: process.env.NODE_ENV === 'development',
 }));
-app.listen(port, console.log(`Server running on port ${port}`));
 
-
-
+// Sync routes
 app.use("/api", require("./routes/syncRoutes.js"));
 
+// Start server
+app.listen(port, () =>
+  console.log(`Server running on port ${port}`.yellow.bold)
+);

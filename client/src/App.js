@@ -40,7 +40,9 @@ const cache = new InMemoryCache({
 });
 
 const client = new ApolloClient({
-  uri: `${process.env.REACT_APP_API_URL}/graphql`,
+
+  uri: 'https://work-sync-1.onrender.com/graphql',
+
   cache,
 });
 
