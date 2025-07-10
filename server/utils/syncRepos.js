@@ -8,10 +8,20 @@ const GITLAB_USER_ID = process.env.GITLAB_USER_ID;
 
 const syncAllRepos = async () => {
   try {
+    console.log("🔄 Syncing repos...");
+    console.log("✅ ENV:", {
+      GITHUB_USERNAME,
+      GITLAB_USER_ID,
+      GITHUB_TOKEN: !!GITHUB_TOKEN,
+      GITLAB_TOKEN: !!GITLAB_TOKEN,
+    });
+
     const [githubRepos, gitlabRepos] = await Promise.all([
       fetchGitHubRepos(GITHUB_USERNAME),
       fetchGitLabRepos(GITLAB_USER_ID),
     ]);
+    console.log("✅ GitHub Repos:", githubRepos.length);
+    console.log("✅ GitLab Repos:", gitlabRepos.length);
 
     const now = new Date();
 
@@ -34,31 +44,49 @@ const syncAllRepos = async () => {
       })),
     ];
 
+    console.log("✅ Total Synced Repos:", formattedRepos.length);
+
+
     return formattedRepos;
+
   } catch (error) {
     console.error("❌ Error syncing repositories:", error.message);
-    throw error;
+     if (error.response) {
+    console.error("📦 Status Code:", error.response.status);
+    console.error("📦 Full Response:", error.response.data);
+  }
+  throw error;
   }
 };
 
 async function fetchGitHubRepos(GITHUB_USERNAME) {
-  const url = `https://api.github.com/users/${GITHUB_USERNAME}/repos`;
-  const headers = GITHUB_TOKEN
-    ? { Authorization: `token ${GITHUB_TOKEN}` }
-    : {};
+  try {
+    const url = `https://api.github.com/users/${GITHUB_USERNAME}/repos`;
+    const headers = GITHUB_TOKEN
+      ? { Authorization: `token ${GITHUB_TOKEN}` }
+      : {};
 
-  const response = await axios.get(url, { headers });
-  return response.data;
+    const response = await axios.get(url, { headers });
+    return response.data;
+  } catch (err) {
+    console.error("❌ GitHub fetch failed:", err.response?.data || err.message);
+    throw err;
+  }
 }
 
 const fetchGitLabRepos = async (GITLAB_USER_ID) => {
-  const url = `https://gitlab.com/api/v4/users/${GITLAB_USER_ID}/projects`;
-  const headers = GITLAB_TOKEN
-    ? { Authorization: `Bearer ${GITLAB_TOKEN}` }
-    : {};
+  try {
+    const url = `https://gitlab.com/api/v4/users/${GITLAB_USER_ID}/projects`;
+    const headers = GITLAB_TOKEN
+      ? { Authorization: `Bearer ${GITLAB_TOKEN}` }
+      : {};
 
-  const response = await axios.get(url, { headers });
-  return response.data;
+    const response = await axios.get(url, { headers });
+    return response.data;
+  } catch (err) {
+    console.error("❌ GitLab fetch failed:", err.response?.data || err.message);
+    throw err;
+  }
 };
 
 module.exports = { syncAllRepos };

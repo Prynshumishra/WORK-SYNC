@@ -5,6 +5,7 @@ const { graphqlHTTP } = require('express-graphql');
 const schema = require('./schema/schema.js');
 const connectDB = require('./config/db');
 const cors = require('cors');
+const syncRoutes = require('./routes/sync');
 
 const app = express();
 const port = process.env.PORT || 5000;
@@ -37,7 +38,8 @@ app.use('/graphql', graphqlHTTP({
 }));
 
 // Sync routes
-app.use("/api", require("./routes/syncRoutes.js"));
+app.use(express.json());
+app.use('/api', syncRoutes);
 
 // Start server
 app.listen(port, () =>
