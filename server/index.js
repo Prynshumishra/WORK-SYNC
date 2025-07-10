@@ -16,7 +16,7 @@ connectDB();
 // Allowlist for CORS
 const allowedOrigins = [
   'http://localhost:3000',
-  'https://work-sync-priyanshu-mishras-projects-7578a104.vercel.app',
+  'https://work-sync-priyanshu-mishras-projects-7578a104.vercel.app', 'https://work-sync.vercel.app',
 ];
 
 // Unified CORS middleware
