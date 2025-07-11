@@ -8,12 +8,12 @@ const RepositorySync = () => {
   const [filter, setFilter] = useState("all");
   const [search, setSearch] = useState("");
 
-  const API_BASE =  "http://localhost:5000" ||  "https://work-sync-1.onrender.com";
+  const API_BASE =  "https://work-sync-1.onrender.com";
 
   const handleSync = async () => {
     setLoading(true);
     try {
-      await axios.post('http://localhost:5000/api/sync/repositories');
+      await axios.post(`${process.env.REACT_APP_API_URL}/api/sync/repositories`);
       fetchRepos();
     } catch (error) {
       console.error("❌ Sync failed:", error?.response?.data || error.message || error);
