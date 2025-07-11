@@ -17,7 +17,7 @@ connectDB();
 const allowedOrigins = [
   'http://localhost:3000',
   'https://work-sync.vercel.app',
-  'https://work-sync-git-main-priyanshu-mishras-projects-7578a104.vercel.app/',
+  'work-sync-git-main-priyanshu-mishras-projects-7578a104.vercel.app',
 ];
 
 app.use(express.json());
