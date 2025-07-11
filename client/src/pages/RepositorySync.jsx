@@ -13,7 +13,7 @@ const RepositorySync = () => {
   const handleSync = async () => {
     setLoading(true);
     try {
-      await axios.post(`${process.env.REACT_APP_API_URL}/api/sync/repositories`);
+      await axios.post(`https://work-sync-1.onrender.com/api/sync/repositories`);
       fetchRepos();
     } catch (error) {
       console.error("❌ Sync failed:", error?.response?.data || error.message || error);
@@ -23,7 +23,7 @@ const RepositorySync = () => {
 
   const fetchRepos = async () => {
     try {
-      const res = await axios.get(`${process.env.REACT_APP_API_URL}/api/repositories`);
+      const res = await axios.get(`https://work-sync-1.onrender.com/api/repositories`);
       setRepos(res.data);
       const latestSync = res.data.reduce((latest, repo) => {
         const time = new Date(repo.lastSyncedAt);
@@ -39,7 +39,7 @@ const RepositorySync = () => {
   useEffect(() => {
   const fetchRepos = async () => {
     try {
-      const res = await axios.get(`${API_BASE}/api/repositories`);
+      const res = await axios.get(`https://work-sync-1.onrender.com/api/repositories`);
       setRepos(res.data);
       const latestSync = res.data.reduce((latest, repo) => {
         const time = new Date(repo.lastSyncedAt);
