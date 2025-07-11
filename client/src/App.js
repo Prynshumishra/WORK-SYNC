@@ -3,7 +3,6 @@ import { ApolloProvider, ApolloClient, InMemoryCache } from '@apollo/client';
 
 import Header from './components/Header';
 import Footer from './components/Footer';
-
 import HomePage from './pages/HomePage';
 import Dashboard from './pages/Dashboard';
 import ProjectsPage from './pages/Projects'; // ✅ Use one Projects page
@@ -38,10 +37,10 @@ const cache = new InMemoryCache({
 
 const client = new ApolloClient({
 
-  uri: 'http://localhost:5000/api',
+  uri: 'http://localhost:5000/graphql' || 'https://work-sync-1.onrender.com/graphql',
 
   cache,
-});
+})
 
 function App() {
   return (
@@ -55,8 +54,6 @@ function App() {
                 <Route path="/" element={<HomePage />} />
                 <Route path='/dashboard' element={<Dashboard/>} />
                 <Route path="/about" element={<About />} />
-                 <Route path="/projects" element={<Projects />} />
-                 <Route path="/clients" element={<Clients />} />
                  <Route path="/ContactUs" element={<ContactUs />} />
                 <Route path="/projects" element={<ProjectsPage />} />
                 <Route path="/clients" element={<ClientsPage />} />
