@@ -10,7 +10,7 @@ const RepositorySync = () => {
   const handleSync = async () => {
     setLoading(true);
     try {
-      await axios.post('http://localhost:5000/api/sync/repositories');
+      await axios.push("https://work-sync-1.onrender.com/api/repositories");
       fetchRepos();
     } catch (error) {
       console.error("❌ Sync failed:", error);
