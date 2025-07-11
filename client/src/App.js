@@ -6,8 +6,8 @@ import Footer from './components/Footer';
 
 import HomePage from './pages/HomePage';
 import Dashboard from './pages/Dashboard';
-import Projects from './pages/Projects';
-import Clients from './pages/Clients';
+import ProjectsPage from './pages/Projects'; // ✅ Use one Projects page
+import ClientsPage from './pages/Clients';   // ✅ Use one Clients page
 import About from './pages/About';
 import ContactUs from './pages/ContactUs';
 import Project from './pages/Project';
@@ -22,12 +22,12 @@ const cache = new InMemoryCache({
     Query: {
       fields: {
         clients: {
-          merge(existing, incoming) {
+          merge(_, incoming) {
             return incoming;
           },
         },
         projects: {
-          merge(existing, incoming) {
+          merge(_, incoming) {
             return incoming;
           },
         },
@@ -37,35 +37,42 @@ const cache = new InMemoryCache({
 });
 
 const client = new ApolloClient({
-  uri: 'https://work-sync-1.onrender.com/graphql', // ✅ Set GraphQL endpoint
+
+  uri: 'http://localhost:5000/api',
+
   cache,
 });
 
 function App() {
   return (
-    <div className="d-flex flex-column min-vh-100">
-      <ApolloProvider client={client}>
-        <Router>
-          <Header />
-          <div className="container">
-            <Routes>
-              <Route path="/" element={<HomePage />} />
-              <Route path="/dashboard" element={<Dashboard />} />
-              <Route path="/projects" element={<Projects />} />
-              <Route path="/clients" element={<Clients />} />
-              <Route path="/about" element={<About />} />
-              <Route path="/contactus" element={<ContactUs />} />
-              <Route path="/projects/:id" element={<Project />} />
-              <Route path="/sync-repos" element={<RepositorySync />} />
-              <Route path="/login" element={<Login />} />
-              <Route path="/register" element={<Register />} />
-              <Route path="*" element={<NotFound />} />
-            </Routes>
-          </div>
-          <Footer />
-        </Router>
-      </ApolloProvider>
-    </div>
+    <>
+      <div className="d-flex flex-column min-vh-100">
+        <ApolloProvider client={client}>
+          <Router>
+            <Header />
+            <div className='container'>
+              <Routes>
+                <Route path="/" element={<HomePage />} />
+                <Route path='/dashboard' element={<Dashboard/>} />
+                <Route path="/about" element={<About />} />
+                 <Route path="/projects" element={<Projects />} />
+                 <Route path="/clients" element={<Clients />} />
+                 <Route path="/ContactUs" element={<ContactUs />} />
+                <Route path="/projects" element={<ProjectsPage />} />
+                <Route path="/clients" element={<ClientsPage />} />
+                <Route path="/sync-repos" element={<RepositorySync />} />
+                <Route path="/login" element={<Login />} />
+                <Route path="/register" element={<Register />} />
+                <Route path='/projects/:id' element={<Project />} />
+                <Route path='*' element={<NotFound />} />
+
+              </Routes>
+            </div>
+            <Footer />
+          </Router>
+        </ApolloProvider>
+      </div>
+    </>
   );
 }
 

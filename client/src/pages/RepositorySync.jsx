@@ -6,21 +6,24 @@ const RepositorySync = () => {
   const [loading, setLoading] = useState(false);
   const [lastSync, setLastSync] = useState(null);
   const [filter, setFilter] = useState("all");
+  const [search, setSearch] = useState("");
+
+  const API_BASE =  "http://localhost:5000" ||  "https://work-sync-1.onrender.com";
 
   const handleSync = async () => {
     setLoading(true);
     try {
-      await axios.push("https://work-sync-1.onrender.com/api/repositories");
+      await axios.post('http://localhost:5000/api/sync/repositories');
       fetchRepos();
     } catch (error) {
-      console.error("❌ Sync failed:", error);
+      console.error("❌ Sync failed:", error?.response?.data || error.message || error);
     }
     setLoading(false);
   };
 
   const fetchRepos = async () => {
     try {
-      const res = await axios.get("https://work-sync-1.onrender.com/api/repositories");
+      const res = await axios.get(`${process.env.REACT_APP_API_URL}/api/repositories`);
       setRepos(res.data);
       const latestSync = res.data.reduce((latest, repo) => {
         const time = new Date(repo.lastSyncedAt);
@@ -28,53 +31,96 @@ const RepositorySync = () => {
       }, new Date(0));
       setLastSync(latestSync.toLocaleString());
     } catch (error) {
-      console.error("❌ Failed to fetch repositories:", error);
+      console.error("❌ Failed to fetch repositories:", error?.response?.data || error.message || error);
     }
   };
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
-    fetchRepos();
-  }, []);
+  const fetchRepos = async () => {
+    try {
+      const res = await axios.get(`${API_BASE}/api/repositories`);
+      setRepos(res.data);
+      const latestSync = res.data.reduce((latest, repo) => {
+        const time = new Date(repo.lastSyncedAt);
+        return time > latest ? time : latest;
+      }, new Date(0));
+      setLastSync(latestSync.toLocaleString());
+    } catch (error) {
+      console.error("❌ Failed to fetch repositories:", error?.response?.data || error.message || error);
+    }
+  };
+
+  fetchRepos();
+}, [API_BASE]);
+
 
   const filteredRepos = repos.filter((repo) =>
-    filter === "all" ? true : repo.platform === filter
+    (filter === "all" || repo.platform === filter) &&
+    repo.name.toLowerCase().includes(search.toLowerCase())
   );
 
   return (
     <div className="container py-5">
       <h2 className="mb-4">Repository Synchronization</h2>
-      <div className="mb-3 d-flex justify-content-between align-items-center">
-        <div>
-          <button className="btn btn-success me-2" onClick={handleSync} disabled={loading}>
+
+      <div className="mb-3 d-flex justify-content-between align-items-center flex-wrap gap-2">
+        <div className="d-flex gap-2 flex-wrap">
+          <button className="btn btn-success" onClick={handleSync} disabled={loading}>
             {loading ? "Syncing..." : "Sync Repositories"}
           </button>
-          <select className="form-select d-inline w-auto" value={filter} onChange={(e) => setFilter(e.target.value)}>
+
+          <select
+            className="form-select w-auto"
+            value={filter}
+            onChange={(e) => setFilter(e.target.value)}
+          >
             <option value="all">All</option>
             <option value="GitHub">GitHub</option>
             <option value="GitLab">GitLab</option>
           </select>
+
+          <input
+            type="text"
+            className="form-control w-auto"
+            placeholder="Search repo name..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+          />
         </div>
+
         {lastSync && <span className="text-muted">Last Sync: {lastSync}</span>}
       </div>
 
-      <div className="row">
-        {filteredRepos.map((repo, idx) => (
-          <div key={idx} className="col-md-6 col-lg-4 mb-4">
-            <div className="card h-100 shadow-sm">
-              <div className="card-body">
-                <h5 className="card-title">{repo.name}</h5>
-                <p className="card-text">{repo.description || "No description"}</p>
-                <p className="card-text">
-                  ⭐ {repo.stars} | <strong>{repo.platform}</strong>
-                </p>
-                <a href={repo.url} target="_blank" rel="noopener noreferrer" className="btn btn-primary btn-sm">
-                  View Repo
-                </a>
+      {filteredRepos.length === 0 ? (
+        <div className="alert alert-warning text-center">
+          No repositories found for this filter or search.
+        </div>
+      ) : (
+        <div className="row">
+          {filteredRepos.map((repo, idx) => (
+            <div key={repo._id || idx} className="col-md-6 col-lg-4 mb-4">
+              <div className="card h-100 shadow-sm">
+                <div className="card-body">
+                  <h5 className="card-title">{repo.name}</h5>
+                  <p className="card-text">{repo.description || "No description"}</p>
+                  <p className="card-text">
+                    ⭐ {repo.stars} | <strong>{repo.platform}</strong>
+                  </p>
+                  <a
+                    href={repo.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="btn btn-primary btn-sm"
+                  >
+                    View Repo
+                  </a>
+                </div>
               </div>
             </div>
-          </div>
-        ))}
-      </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 };
