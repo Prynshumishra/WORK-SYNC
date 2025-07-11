@@ -10,7 +10,7 @@ const RepositorySync = () => {
   const handleSync = async () => {
     setLoading(true);
     try {
-      await axios.post(`${process.env.REACT_APP_API_URL}/api/sync/repositories`);
+      await axios.post('http://localhost:5000/api/sync/repositories');
       fetchRepos();
     } catch (error) {
       console.error("❌ Sync failed:", error);

@@ -18,10 +18,10 @@ const allowedOrigins = [
   'http://localhost:3000',
   'https://work-sync.vercel.app',
   'https://work-sync-priyanshu-mishras-projects-7578a104.vercel.app',
-  'https://work-sync-q4ytr9tt6-priyanshu-mishras-projects-7578a104.vercel.app', // 👈 ADD THIS
+  'https://work-sync-q4ytr9tt6-priyanshu-mishras-projects-7578a104.vercel.app', 
 ];
 
-
+app.use(express.json());
 // Unified CORS middleware
 app.use(cors({
   origin: function (origin, callback) {
@@ -41,7 +41,7 @@ app.use('/graphql', graphqlHTTP({
 }));
 
 // Sync routes
-app.use(express.json());
+
 app.use('/api', syncRoutes);
 
 // Start server

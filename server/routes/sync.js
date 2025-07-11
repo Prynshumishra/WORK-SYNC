@@ -3,10 +3,9 @@ const router = express.Router();
 const { syncAllRepos } = require("../controllers/syncController");
 const Repository = require("../models/Repository");
 
-// POST: Sync all repos from GitHub & GitLab
-router.post("/repositories", async (req, res) => {
+router.post("/sync/repositories", async (req, res) => {
   try {
-    const repos = await syncAllRepos();
+    const repos = await syncAllRepos(); // no userId
     res.status(200).json({ success: true, repos });
   } catch (err) {
     console.error("❌ Sync error:", err.message);
@@ -14,7 +13,6 @@ router.post("/repositories", async (req, res) => {
   }
 });
 
-// GET: All synced repositories
 router.get("/repositories", async (req, res) => {
   try {
     console.log("Fetching repositories..."); // debug log
