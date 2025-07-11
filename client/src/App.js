@@ -41,7 +41,7 @@ const cache = new InMemoryCache({
 
 const client = new ApolloClient({
 
-  uri: 'http://localhost:5000/api',
+  uri: 'https://work-sync-1.onrender.com';
 
   cache,
 });
